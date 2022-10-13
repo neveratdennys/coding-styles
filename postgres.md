@@ -3,13 +3,13 @@
 ##### Use uppercase for statements, operators and keywords.
 ```sql
 -- bad
-SELECT * FROM foo order by bar;
+SELECT bar FROM foo order by bar;
 
 -- good
-SELECT * FROM foo ORDER BY bar;
+SELECT bar FROM foo ORDER BY bar;
 ```
 
-##### Use lowercase for functions.
+##### Use lowercase for function calls.
 ```sql
 -- bad
 SELECT COUNT(*) FROM foo;
@@ -21,17 +21,17 @@ SELECT count(*) FROM foo;
 ##### Use uppercase for types.
 ```sql
 -- bad
-CREATE TABLE foo(bar integer, baz text);
+CREATE TABLE IF NOT EXISTS foo(bar integer, baz text);
 
 -- good
-CREATE TABLE foo(bar INTEGER, baz TEXT);
+CREATE TABLE IF NOT EXISTS foo(bar INTEGER, baz TEXT);
 ```
 
 ## Operators ##
-##### Use same operators as SQL Server.
+##### Use consistent operators.
 ```sql
 -- good
-SELECT baz FROM foo WHERE bar <> baz;
+EXECUTE 'SELECT baz FROM dbo.foo WHERE' || var_bar '<> baz';
 ```
 
 ## Arrays ##
@@ -50,12 +50,12 @@ SELECT ARRAY[1, 2, 3 + 4];
 ##### Parameters with a default value must be declared with the `DEFAULT` keyword.
 ```sql
 -- bad
-CREATE FUNCTION foo(in par_text = 'bar') RETURNS text AS $$
+CREATE OR REPLACE FUNCTION foo(in par_text = 'bar') RETURNS text AS $$
   SELECT par_text;
 $$ LANGUAGE sql;
 
 -- good
-CREATE FUNCTION foo(in text DEFAULT 'bar') RETURNS text AS $$
+CREATE OR REPLACE FUNCTION foo(in text DEFAULT 'bar') RETURNS text AS $$
   SELECT par_bar;
 $$ LANGUAGE sql;
 ```
@@ -72,7 +72,7 @@ SELECT foo_id, bar_id, creation_date FROM foo;
 
 ##### Specify table columns when inserting even if it is set to default.
 ```sql
-CREATE TABLE foo(a, b default 0, c, d default 1);
+CREATE TABLE IF NOT EXISTS foo(a, b DEFAULT 0, c, d DEFAULT 1);
 
 -- bad
 INSERT INTO foo VALUES (1, 2, 3, 4);
@@ -84,7 +84,7 @@ INSERT INTO foo(a, c) VALUES (1, 3);
 INSERT INTO foo(a, b, c, d) VALUES (1, 2, 3, 4);
 
 -- good
-INSERT INTO foo(a, b, c, d) VALUES (1, default, 3, default);
+INSERT INTO foo(a, b, c, d) VALUES (1, DEFAULT, 3, DEFAULT);
 ```
 
 ##### Separate columns and their aliases
@@ -100,21 +100,21 @@ SELECT f.bar FROM foo AS f;
 ##### Do not use space before parentheses when writing one-line code unless it is following a keyword.
 ```sql
 -- bad
-CREATE TABLE foo ();
+CREATE TABLE IF NOT EXISTS foo ();
 INSERT INTO bar (baz) VALUES (1);
 INSERT INTO bar(baz) VALUES(1);
-CREATE FUNCTION foo_bar (in_a text) ...;
+CREATE OR REPLACE FUNCTION foo_bar (in_a text) ...;
 
 -- good
-CREATE TABLE foo();
+CREATE TABLE IF NOT EXISTS foo();
 INSERT INTO bar(baz) VALUES (1);
-CREATE FUNCTION foo_bar(in_a text) ...;
+CREATE OR REPLACE FUNCTION foo_bar(in_a text) ...;
 ```
 
 ##### Use space before parentheses and comma dangle at line end when using multi-line code.
 ```sql
 -- good
-CREATE TABLE foo
+CREATE TABLE IF NOT EXISTS foo
 (
   a,
   b,
@@ -122,7 +122,7 @@ CREATE TABLE foo
 );
 
 -- bad
-CREATE table foo (
+CREATE TABLE IF NOT EXISTS foo (
   a
   , b
   , c
@@ -133,16 +133,18 @@ CREATE table foo (
 ##### Respect proper function indentation, name the `$$` block and use multi-line parameters only if needed.
 ```sql
 -- good
-CREATE FUNCTION foo(in_a text, in_b integer)
-RETURNS INTEGER
+CREATE FUNCTION foo(par_a TEXT, par_b INTEGER)
+RETURNS TABLE (id INTEGER, b INTEGER)
 AS 
 $body$
     SELECT 
-        foo_id,
-        ff
-    FROM foo a
+        a.id,
+        par_b
+    FROM dbo.foo AS a
     INNER JOIN boo AS b
-        ON a. = b.
+        ON (
+            par_a <> (par_b - 1)::TEXT
+        )
     WHERE bar = in_a 
         AND baz = in_b
     ORDER BY bar;

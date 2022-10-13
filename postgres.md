@@ -50,14 +50,22 @@ SELECT ARRAY[1, 2, 3 + 4];
 ##### Parameters with a default value must be declared with the `DEFAULT` keyword.
 ```sql
 -- bad
-CREATE OR REPLACE FUNCTION foo(in par_text = 'bar') RETURNS text AS $$
-  SELECT par_text;
-$$ LANGUAGE sql;
+CREATE OR REPLACE FUNCTION foo(in par_bar = 'bar') 
+RETURNS TEXT 
+AS 
+$$
+  SELECT bar;
+$$ 
+LANGUAGE sql;
 
 -- good
-CREATE OR REPLACE FUNCTION foo(in text DEFAULT 'bar') RETURNS text AS $$
+CREATE OR REPLACE FUNCTION foo(in par_bar TEXT DEFAULT 'bar') 
+RETURNS TEXT 
+AS 
+$$
   SELECT par_bar;
-$$ LANGUAGE sql;
+$$ 
+LANGUAGE sql;
 ```
 
 ## Statements ##
@@ -103,12 +111,12 @@ SELECT f.bar FROM foo AS f;
 CREATE TABLE IF NOT EXISTS foo ();
 INSERT INTO bar (baz) VALUES (1);
 INSERT INTO bar(baz) VALUES(1);
-CREATE OR REPLACE FUNCTION foo_bar (in_a text) ...;
+CREATE OR REPLACE FUNCTION foo_bar (in par_a TEXT) ...;
 
 -- good
 CREATE TABLE IF NOT EXISTS foo();
 INSERT INTO bar(baz) VALUES (1);
-CREATE OR REPLACE FUNCTION foo_bar(in_a text) ...;
+CREATE OR REPLACE FUNCTION foo_bar(in par_a TEXT) ...;
 ```
 
 ##### Use space before parentheses and comma dangle at line end when using multi-line code.
@@ -133,8 +141,8 @@ CREATE TABLE IF NOT EXISTS foo (
 ##### Respect proper function indentation, name the `$$` block and use multi-line parameters only if needed.
 ```sql
 -- good
-CREATE FUNCTION foo(par_a TEXT, par_b INTEGER)
-RETURNS TABLE (id INTEGER, b INTEGER)
+CREATE OR REPLACE FUNCTION foo(par_a TEXT, par_b INTEGER)
+RETURNS TABLE (id INTEGER, par_b INTEGER)
 AS 
 $body$
     SELECT 
@@ -143,7 +151,8 @@ $body$
     FROM dbo.foo AS a
     INNER JOIN boo AS b
         ON (
-            par_a <> (par_b - 1)::TEXT
+            par_b > 0
+            AND par_a <> (par_b - 1)::TEXT
         )
     WHERE bar = in_a 
         AND baz = in_b

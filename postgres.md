@@ -34,6 +34,15 @@ CREATE TABLE IF NOT EXISTS foo(bar INTEGER, baz TEXT);
 EXECUTE 'SELECT baz FROM dbo.foo WHERE' || var_bar '<> baz';
 ```
 
+## Naming ##
+##### Use t$ prefix when naming temporary tables.
+```sql
+-- good
+CREATE TEMPORARY TABLE IF NOT EXISTS t$foo(
+    bar INTEGER,
+    baz TEXT) ON COMMIT DROP;
+```
+
 ## Arrays ##
 ##### Use proper array declaration.
 ```sql

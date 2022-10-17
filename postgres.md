@@ -9,6 +9,15 @@ SELECT bar FROM foo order by bar;
 SELECT bar FROM foo ORDER BY bar;
 ```
 
+##### Use uppercase for types.
+```sql
+-- bad
+CREATE TABLE IF NOT EXISTS foo(bar integer, baz text);
+
+-- good
+CREATE TABLE IF NOT EXISTS foo(bar INTEGER, baz TEXT);
+```
+
 ##### Use lowercase for function calls.
 ```sql
 -- bad
@@ -18,13 +27,17 @@ SELECT COUNT(*) FROM foo;
 SELECT count(*) FROM foo;
 ```
 
-##### Use uppercase for types.
+##### Use lowercase for table names and column names
 ```sql
 -- bad
-CREATE TABLE IF NOT EXISTS foo(bar integer, baz text);
-
+CREATE TEMPORARY TABLE IF NOT EXISTS t$SampleTable(
+    FOO INTEGER
+    "From" TEXT);
+  
 -- good
-CREATE TABLE IF NOT EXISTS foo(bar INTEGER, baz TEXT);
+CREATE TEMPORARY TABLE IF NOT EXISTS t$sampletable(
+    foo INTEGER
+    "from" TEXT);
 ```
 
 ## Operators ##

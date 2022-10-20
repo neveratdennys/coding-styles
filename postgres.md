@@ -48,10 +48,10 @@ EXECUTE 'SELECT baz FROM dbo.foo WHERE' || var_bar '<> baz';
 ```
 
 ## Naming ##
-##### Use t$ prefix when naming temporary tables.
+##### Use t$function_name when naming temporary tables.
 ```sql
 -- good
-CREATE TEMPORARY TABLE IF NOT EXISTS t$foo(
+CREATE TEMPORARY TABLE IF NOT EXISTS t$fn_foo(
     bar INTEGER,
     baz TEXT) ON COMMIT DROP;
 ```

@@ -30,12 +30,12 @@ SELECT count(*) FROM foo;
 ##### Use lowercase for table names and column names
 ```sql
 -- bad
-CREATE TEMPORARY TABLE IF NOT EXISTS t$SampleTable(
+CREATE TEMPORARY TABLE IF NOT EXISTS t$SampleFunction(
     FOO INTEGER
     "From" TEXT);
   
 -- good
-CREATE TEMPORARY TABLE IF NOT EXISTS t$sampletable(
+CREATE TEMPORARY TABLE IF NOT EXISTS t$samplefunction(
     foo INTEGER
     "from" TEXT);
 ```
